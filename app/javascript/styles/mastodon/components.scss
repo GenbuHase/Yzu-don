@@ -544,6 +544,25 @@
     .compose-form__publish-button-wrapper {
       overflow: hidden;
       padding-top: 10px;
+
+      button {
+        display: inline-block !important;
+        width: auto !important;
+
+        margin-right: 0.5em;
+      }
+
+      button:last-child {
+        margin-right: auto;
+      }
+    }
+  }
+
+  #utilBtns {
+    padding-top: 10px;
+
+    * {
+      margin-bottom: 1em;
     }
   }
 }
