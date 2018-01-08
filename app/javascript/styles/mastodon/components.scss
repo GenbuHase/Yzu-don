@@ -544,6 +544,25 @@
     .compose-form__publish-button-wrapper {
       overflow: hidden;
       padding-top: 10px;
+
+      button {
+        display: inline-block !important;
+        width: auto !important;
+
+        margin-right: 0.5em;
+      }
+
+      button:last-child {
+        margin-right: auto;
+      }
+    }
+  }
+
+  #utilBtns {
+    padding-top: 10px;
+
+    * {
+      margin-bottom: 1em;
     }
   }
 }
@@ -1773,7 +1792,7 @@
   }
 
   > .mastodon {
-    background: url('../images/mastodon-drawer.png') no-repeat left bottom / contain;
+    background: url('../images/mastodon-ui.png') no-repeat left bottom / contain;
     flex: 1;
   }
 }
@@ -2070,6 +2089,11 @@
   font-weight: 500;
   text-transform: uppercase;
   cursor: default;
+}
+
+.getting-started__wrapper,
+.getting_started {
+  background: $ui-base-color;
 }
 
 .getting-started__wrapper {

@@ -507,6 +507,18 @@
       {
         "defaultMessage": "{publish}!",
         "id": "compose_form.publish_loud"
+      },
+      {
+        "defaultMessage": "RISA",
+        "id": "compose_form.UtilBtns_risa"
+      },
+      {
+        "defaultMessage": "Typo!!!",
+        "id": "compose_form.UtilBtns_goji"
+      },
+      {
+        "defaultMessage": "Burn Harukin",
+        "id": "compose_form.UtilBtns_harukin"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/components/compose_form.json"
@@ -727,6 +739,10 @@
       {
         "defaultMessage": "locked",
         "id": "compose_form.lock_disclaimer.lock"
+      },
+      {
+        "defaultMessage": "This toot won't be listed under any hashtag as it is unlisted. Only public toots can be searched by hashtag.",
+        "id": "compose_form.hashtag_warning"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/containers/warning_container.json"
@@ -864,6 +880,10 @@
       {
         "defaultMessage": "Keyboard shortcuts",
         "id": "navigation_bar.keyboard_shortcuts"
+      },
+      {
+        "defaultMessage": "Announcements from Admin",
+        "id": "navigation_bar.announcements"
       },
       {
         "defaultMessage": "FAQ",
@@ -1053,7 +1073,7 @@
         "id": "lists.delete"
       },
       {
-        "defaultMessage": "There is nothing in this list yet.",
+        "defaultMessage": "There is nothing in this list yet. When members of this list post new statuses, they will appear here.",
         "id": "empty_column.list"
       }
     ],
@@ -1245,6 +1265,22 @@
         "id": "status.favourite"
       },
       {
+        "defaultMessage": "Mute @{name}",
+        "id": "status.mute"
+      },
+      {
+        "defaultMessage": "Mute conversation",
+        "id": "status.mute_conversation"
+      },
+      {
+        "defaultMessage": "Unmute conversation",
+        "id": "status.unmute_conversation"
+      },
+      {
+        "defaultMessage": "Block @{name}",
+        "id": "status.block"
+      },
+      {
         "defaultMessage": "Report @{name}",
         "id": "status.report"
       },
@@ -1276,6 +1312,14 @@
       {
         "defaultMessage": "Are you sure you want to delete this status?",
         "id": "confirmations.delete.message"
+      },
+      {
+        "defaultMessage": "Block",
+        "id": "confirmations.block.confirm"
+      },
+      {
+        "defaultMessage": "Are you sure you want to block {name}?",
+        "id": "confirmations.block.message"
       }
     ],
     "path": "app/javascript/mastodon/features/status/index.json"
