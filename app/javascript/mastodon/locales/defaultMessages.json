@@ -510,15 +510,15 @@
       },
       {
         "defaultMessage": "RISA",
-        "id": "compose_form.UtilBtns_risa"
+        "id": "compose_form.utilBtns_risa"
       },
       {
         "defaultMessage": "Typo!!!",
-        "id": "compose_form.UtilBtns_goji"
+        "id": "compose_form.utilBtns_goji"
       },
       {
         "defaultMessage": "Burn Harukin",
-        "id": "compose_form.UtilBtns_harukin"
+        "id": "compose_form.utilBtns_harukin"
       }
     ],
     "path": "app/javascript/mastodon/features/compose/components/compose_form.json"

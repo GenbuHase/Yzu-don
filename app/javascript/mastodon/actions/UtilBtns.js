@@ -6,79 +6,89 @@ export const UTILBTNS_RISA = 'UTILBTNS_RISA';
 export const UTILBTNS_GOJI = 'UTILBTNS_GOJI';
 export const UTILBTNS_HARUKIN = 'UTILBTNS_HARUKIN';
 
-export function submitRisa (content = "") {
-	return function (dispatch, getState) {
-		let text = `@RISA ${content}`;
+export function submitRisa (textarea) {
+  return function (dispatch, getState) {
+    let text = `@RISA ${textarea.value}`;
 
-		dispatch(submitRisaRequest());
-		dispatch(changeCompose(text));
-	}
+    dispatch(submitRisaRequest());
+    dispatch(changeCompose(text));
+
+    textarea.focus();
+  }
 }
 
 export function submitRisaRequest () {
-	return {
-		type: UTILBTNS_RISA
-	}
+  return {
+    type: UTILBTNS_RISA
+  }
 }
 
-export function submitGoji () {
-	return function (dispatch, getState) {
-		let text = [
-			"#誤字に淫夢厨",
-			":goji:"
-		].join("\r\n");
+export function submitGoji (textarea) {
+  return function (dispatch, getState) {
+    if (!textarea.value) {
+      let text = [
+        "#誤字に淫夢厨",
+        ":goji:"
+      ].join("\r\n");
 
-		dispatch(submitGojiRequest());
-		dispatch(changeCompose(text));
-	}
+      dispatch(submitGojiRequest());
+      dispatch(changeCompose(text));
+
+      textarea.focus();
+    }
+  }
 }
 
 export function submitGojiRequest () {
-	return {
-		type: UTILBTNS_GOJI
-	}
+  return {
+    type: UTILBTNS_GOJI
+  }
 }
 
-export function submitHarukin () {
-	return function (dispatch, getState) {
-		let text = "";
+export function submitHarukin (textarea) {
+  return function (dispatch, getState) {
+    if (!textarea.value) {
+      let text = "";
 
-		let quantity = Math.round(Math.random() * 6 + 1),
-			type = Math.round(Math.random() + 1);
+      let quantity = Math.round(Math.random() * 6 + 1),
+        type = Math.round(Math.random() + 1);
 
-		let harukin = "";
+      let harukin = "";
 
-		switch (type) {
-			case 1:
-				harukin = ":harukin: ";
-				break;
+      switch (type) {
+        case 1:
+          harukin = ":harukin: ";
+          break;
 
-			case 2:
-				harukin = ":harukin_old: ";
-				break;
-		}
+        case 2:
+          harukin = ":harukin_old: ";
+          break;
+      }
 
-		switch (quantity) {
-			default:
-				text = [
-					harukin.repeat(quantity),
-					"🔥 ".repeat(quantity)
-				].join("\r\n");
+      switch (quantity) {
+        default:
+          text = [
+            harukin.repeat(quantity),
+            "🔥 ".repeat(quantity)
+          ].join("\r\n");
 
-				break;
-				
-			case 7:
-				text = `${harukin}💕\r\n`.repeat(6);
-				break;
-		}
+          break;
+          
+        case 7:
+          text = `${harukin}💕\r\n`.repeat(6);
+          break;
+      }
 
-		dispatch(submitHarukinRequest());
-		dispatch(changeCompose(text));
-	}
+      dispatch(submitHarukinRequest());
+      dispatch(changeCompose(text));
+
+      textarea.focus();
+    }
+  }
 }
 
 export function submitHarukinRequest () {
-	return {
-		type: UTILBTNS_HARUKIN
-	}
+  return {
+    type: UTILBTNS_HARUKIN
+  }
 }

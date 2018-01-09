@@ -18,7 +18,7 @@ import { isMobile } from '../../../is_mobile';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { length } from 'stringz';
 import { countableText } from '../util/counter';
-import UtilBtns from '../containers/UtilBtns_container';
+import { UserCounter } from './user_counter';
 
 const messages = defineMessages({
   placeholder: { id: 'compose_form.placeholder', defaultMessage: 'What is on your mind?' },
@@ -26,7 +26,9 @@ const messages = defineMessages({
   publish: { id: 'compose_form.publish', defaultMessage: 'Toot' },
   publishLoud: { id: 'compose_form.publish_loud', defaultMessage: '{publish}!' },
   
-  risa: { id: 'compose_form.UtilBtns_risa', defaultMessage: 'RISA' }
+  utilBtns_risa: { id: 'compose_form.utilBtns_risa', defaultMessage: 'RISA' },
+  utilBtns_goji: { id: 'compose_form.utilBtns_goji', defaultMessage: 'Typo!!!' },
+  utilBtns_harukin: { id: 'compose_form.utilBtns_harukin', defaultMessage: 'Burn Harukin' }
 });
 
 @injectIntl
@@ -54,7 +56,9 @@ export default class ComposeForm extends ImmutablePureComponent {
     onPickEmoji: PropTypes.func.isRequired,
     showSearch: PropTypes.bool,
 
-    onRisaSubmit: PropTypes.func.isRequired
+    onRisaSubmit: PropTypes.func.isRequired,
+    onGojiSubmit: PropTypes.func.isRequired,
+    onHarukinSubmit: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -145,11 +149,10 @@ export default class ComposeForm extends ImmutablePureComponent {
     this._restoreCaret = position + emojiChar.length + 1;
     this.props.onPickEmoji(position, data);
   }
-
-  handleOnRisaSubmit = () => {
-    this.props.onRisaSubmit(this.autosuggestTextarea.textarea.value);
-    this.autosuggestTextarea.textarea.focus();
-  }
+  
+  handleOnRisaSubmit = () => this.props.onRisaSubmit(this.autosuggestTextarea.textarea);
+  handleOnGojiSubmit = () => this.props.onGojiSubmit(this.autosuggestTextarea.textarea);
+  handleOnHarukinSubmit = () => this.props.onHarukinSubmit(this.autosuggestTextarea.textarea);
 
   render () {
     const { intl, onPaste, showSearch } = this.props;
@@ -213,13 +216,24 @@ export default class ComposeForm extends ImmutablePureComponent {
         </div>
 
         <div className='compose-form__publish'>
+          <div className="user-counter__wrapper">
+            <i className="fa fa-users"></i>
+            <span>10人</span>
+          </div>
+
           <div className='compose-form__publish-button-wrapper'>
-            <Button id="utilBtns__button--risa" className="utilBtns__button" text={intl.formatMessage(messages.risa)} onClick={this.handleOnRisaSubmit} block />
-            <Button text={publishText} onClick={this.handleSubmit} disabled={disabled || this.props.is_uploading || length(text) > 500 || (text.length !== 0 && text.trim().length === 0)} block />
+            <Button className="compose-form__utilBtns-risa" text={intl.formatMessage(messages.utilBtns_risa)} onClick={this.handleOnRisaSubmit} />
+            
+            <Button onClick={this.handleSubmit} disabled={disabled || this.props.is_uploading || length(text) > 500 || (text.length !== 0 && text.trim().length === 0)} block>
+              <span className="fa fa-send">{publishText}</span>
+            </Button>
           </div>
         </div>
 
-        <UtilBtns />
+        <div className="compose-form__utilBtns">
+          <Button className="compose-form__utilBtns-goji" text={intl.formatMessage(messages.utilBtns_goji)} onClick={this.handleOnGojiSubmit} block />
+          <Button className="compose-form__utilBtns-harukin" text={intl.formatMessage(messages.utilBtns_harukin)} onClick={this.handleOnHarukinSubmit} block />
+        </div>
       </div>
     );
   }

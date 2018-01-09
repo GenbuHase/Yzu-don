@@ -540,14 +540,23 @@
     display: flex;
     justify-content: flex-end;
     min-width: 0;
+    padding-top: 10px;
+
+    .user-counter__wrapper {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      flex: 1;
+    }
 
     .compose-form__publish-button-wrapper {
       overflow: hidden;
-      padding-top: 10px;
 
       button {
-        display: inline-block !important;
-        width: auto !important;
+        display: inline-block;
+        width: auto;
 
         margin-right: 0.5em;
       }
@@ -558,7 +567,7 @@
     }
   }
 
-  #utilBtns {
+  .compose-form__utilBtns {
     padding-top: 10px;
 
     * {
