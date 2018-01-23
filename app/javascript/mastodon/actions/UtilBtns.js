@@ -47,23 +47,16 @@ export function submitGojiRequest () {
 
 export function submitHarukin (textarea) {
   return function (dispatch, getState) {
+    const HARUKINS = [":harukin: ", ":harukin_old: ", ":harukin_ika: ", ":harukin_tako: "];
+    const MAX = 6;
+
     if (!textarea.value) {
       let text = "";
 
-      let quantity = Math.round(Math.random() * 6 + 1),
-        type = Math.round(Math.random() + 1);
+      let quantity = Math.round(Math.random() * MAX + 1);
+      let type = Math.round(Math.random() * (HARUKINS.length - 1));
 
-      let harukin = "";
-
-      switch (type) {
-        case 1:
-          harukin = ":harukin: ";
-          break;
-
-        case 2:
-          harukin = ":harukin_old: ";
-          break;
-      }
+      let harukin = HARUKINS[type];
 
       switch (quantity) {
         default:
@@ -74,7 +67,7 @@ export function submitHarukin (textarea) {
 
           break;
           
-        case 7:
+        case MAX + 1:
           text = `${harukin}💕\r\n`.repeat(6);
           break;
       }
