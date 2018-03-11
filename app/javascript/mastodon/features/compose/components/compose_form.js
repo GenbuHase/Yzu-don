@@ -55,6 +55,7 @@ export default class ComposeForm extends ImmutablePureComponent {
     onPaste: PropTypes.func.isRequired,
     onPickEmoji: PropTypes.func.isRequired,
     showSearch: PropTypes.bool,
+    anyMedia: PropTypes.bool,
 
     onRisaSubmit: PropTypes.func.isRequired,
     onGojiSubmit: PropTypes.func.isRequired,
@@ -155,10 +156,10 @@ export default class ComposeForm extends ImmutablePureComponent {
   handleOnHarukinSubmit = () => this.props.onHarukinSubmit(this.autosuggestTextarea.textarea);
 
   render () {
-    const { intl, onPaste, showSearch } = this.props;
+    const { intl, onPaste, showSearch, anyMedia } = this.props;
     const disabled = this.props.is_submitting;
     const text     = [this.props.spoiler_text, countableText(this.props.text)].join('');
-
+    const disabledButton = disabled || this.props.is_uploading || length(text) > 500 || (text.length !== 0 && text.trim().length === 0 && !anyMedia);
     let publishText = '';
 
     if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
@@ -218,8 +219,7 @@ export default class ComposeForm extends ImmutablePureComponent {
         <div className='compose-form__publish'>
           <div className='compose-form__publish-button-wrapper'>
             <Button className="compose-form__utilBtns-risa" text={intl.formatMessage(messages.utilBtns_risa)} onClick={this.handleOnRisaSubmit} />
-            
-            <Button onClick={this.handleSubmit} disabled={disabled || this.props.is_uploading || length(text) > 500 || (text.length !== 0 && text.trim().length === 0)} block>
+            <Button text={publishText} onClick={this.handleSubmit} disabled={disabledButton} block>
               <span className="fa fa-send">{publishText}</span>
             </Button>
           </div>
