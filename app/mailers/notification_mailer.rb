@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 class NotificationMailer < ApplicationMailer
-  helper :stream_entries
-
-  add_template_helper RoutingHelper
+  helper StreamEntriesHelper
 
   def mention(recipient, notification)
     @me     = recipient
     @status = notification.target_status
 
-    return if @me.user.disabled? || @status.nil?
+    return if @me.user.disabled?
 
     locale_for_account(@me) do
       thread_by_conversation(@status.conversation)
@@ -33,7 +31,7 @@ class NotificationMailer < ApplicationMailer
     @account = notification.from_account
     @status  = notification.target_status
 
-    return if @me.user.disabled? || @status.nil?
+    return if @me.user.disabled?
 
     locale_for_account(@me) do
       thread_by_conversation(@status.conversation)
@@ -46,7 +44,7 @@ class NotificationMailer < ApplicationMailer
     @account = notification.from_account
     @status  = notification.target_status
 
-    return if @me.user.disabled? || @status.nil?
+    return if @me.user.disabled?
 
     locale_for_account(@me) do
       thread_by_conversation(@status.conversation)

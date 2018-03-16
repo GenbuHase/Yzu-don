@@ -12,7 +12,7 @@ export default class DisplayName extends React.PureComponent {
 
     return (
       <span className='display-name'>
-        <bdi><strong className='display-name__html' dangerouslySetInnerHTML={displayNameHtml} /></bdi> <span className='display-name__account'>@{this.props.account.get('acct')}</span>
+        <strong className='display-name__html' dangerouslySetInnerHTML={displayNameHtml} /> <span className='display-name__account'>@{this.props.account.get('acct')}</span>
       </span>
     );
   }

@@ -6,8 +6,8 @@ ar:
         account:
           attributes:
             username:
-              invalid: فقط حروف و أرقام و سطور سفلية
+              invalid: فقط حروف و أرقام و تسطير سفلي
         status:
           attributes:
             reblog:
-              taken: المنشور موجود مِن قبل
+              taken: المنشور موجود

@@ -46,13 +46,11 @@ RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
 
   config.before :each, type: :feature do
-    https = Rails.env.production? || ENV['LOCAL_HTTPS'] == 'true'
+    https = ENV['LOCAL_HTTPS'] == 'true'
     Capybara.app_host = "http#{https ? 's' : ''}://#{ENV.fetch('LOCAL_DOMAIN')}"
   end
 
   config.after :each do
-    Rails.cache.clear
-
     keys = Redis.current.keys
     Redis.current.del(keys) if keys.any?
   end

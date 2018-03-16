@@ -6,7 +6,7 @@ class ActivityPub::ProcessAccountService < BaseService
   # Should be called with confirmed valid JSON
   # and WebFinger-resolved username and domain
   def call(username, domain, json)
-    return if json['inbox'].blank? || unsupported_uri_scheme?(json['id'])
+    return if json['inbox'].blank?
 
     @json        = json
     @uri         = @json['id']
@@ -27,7 +27,6 @@ class ActivityPub::ProcessAccountService < BaseService
 
     after_protocol_change! if protocol_changed?
     after_key_change! if key_changed?
-    check_featured_collection! if @account.featured_collection_url.present?
 
     @account
   rescue Oj::ParseError
@@ -58,15 +57,14 @@ class ActivityPub::ProcessAccountService < BaseService
   end
 
   def set_immediate_attributes!
-    @account.inbox_url               = @json['inbox'] || ''
-    @account.outbox_url              = @json['outbox'] || ''
-    @account.shared_inbox_url        = (@json['endpoints'].is_a?(Hash) ? @json['endpoints']['sharedInbox'] : @json['sharedInbox']) || ''
-    @account.followers_url           = @json['followers'] || ''
-    @account.featured_collection_url = @json['featured'] || ''
-    @account.url                     = url || @uri
-    @account.display_name            = @json['name'] || ''
-    @account.note                    = @json['summary'] || ''
-    @account.locked                  = @json['manuallyApprovesFollowers'] || false
+    @account.inbox_url        = @json['inbox'] || ''
+    @account.outbox_url       = @json['outbox'] || ''
+    @account.shared_inbox_url = (@json['endpoints'].is_a?(Hash) ? @json['endpoints']['sharedInbox'] : @json['sharedInbox']) || ''
+    @account.followers_url    = @json['followers'] || ''
+    @account.url              = url || @uri
+    @account.display_name     = @json['name'] || ''
+    @account.note             = @json['summary'] || ''
+    @account.locked           = @json['manuallyApprovesFollowers'] || false
   end
 
   def set_fetchable_attributes!
@@ -76,7 +74,7 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.statuses_count    = outbox_total_items    if outbox_total_items.present?
     @account.following_count   = following_total_items if following_total_items.present?
     @account.followers_count   = followers_total_items if followers_total_items.present?
-    @account.moved_to_account  = @json['movedTo'].present? ? moved_account : nil
+    @account.moved_to_account  = moved_account         if @json['movedTo'].present?
   end
 
   def after_protocol_change!
@@ -85,10 +83,6 @@ class ActivityPub::ProcessAccountService < BaseService
 
   def after_key_change!
     RefollowWorker.perform_async(@account.id)
-  end
-
-  def check_featured_collection!
-    ActivityPub::SynchronizeFeaturedCollectionWorker.perform_async(@account.id)
   end
 
   def image_url(key)
@@ -113,21 +107,7 @@ class ActivityPub::ProcessAccountService < BaseService
 
   def url
     return if @json['url'].blank?
-
-    url_candidate = url_to_href(@json['url'], 'text/html')
-
-    if unsupported_uri_scheme?(url_candidate) || mismatching_origin?(url_candidate)
-      nil
-    else
-      url_candidate
-    end
-  end
-
-  def mismatching_origin?(url)
-    needle   = Addressable::URI.parse(url).host
-    haystack = Addressable::URI.parse(@uri).host
-
-    !haystack.casecmp(needle).zero?
+    url_to_href(@json['url'], 'text/html')
   end
 
   def outbox_total_items

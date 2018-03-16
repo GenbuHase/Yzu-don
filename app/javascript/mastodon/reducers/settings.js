@@ -93,7 +93,7 @@ export default function settings(state = initialState, action) {
     return hydrate(state, action.state.get('settings'));
   case SETTING_CHANGE:
     return state
-      .setIn(action.path, action.value)
+      .setIn(action.key, action.value)
       .set('saved', false);
   case COLUMN_ADD:
     return state

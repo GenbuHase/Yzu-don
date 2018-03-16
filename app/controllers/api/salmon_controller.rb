@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Api::SalmonController < Api::BaseController
-  include SignatureVerification
-
   before_action :set_account
   respond_to :txt
 
@@ -11,7 +9,7 @@ class Api::SalmonController < Api::BaseController
       process_salmon
       head 202
     elsif payload.present?
-      render plain: signature_verification_failure_reason, status: 401
+      [signature_verification_failure_reason, 401]
     else
       head 400
     end

@@ -54,7 +54,7 @@ class NotifyService < BaseService
   end
 
   def response_to_recipient?
-    @notification.target_status.in_reply_to_account_id == @recipient.id && @notification.target_status.thread&.direct_visibility?
+    @notification.target_status.in_reply_to_account_id == @recipient.id
   end
 
   def optional_non_following_and_direct?

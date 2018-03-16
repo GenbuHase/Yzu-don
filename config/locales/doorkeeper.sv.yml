@@ -36,7 +36,7 @@ sv:
         scopes: Separera omfattningen med mellanslag. Lämna tomt för att använda standardomfattning.
       index:
         application: Applikation
-        callback_url: Återkalls URL
+        callback_url: Callback URL
         delete: Ta bort
         name: Namn
         new: Ny applikation
@@ -48,10 +48,10 @@ sv:
       show:
         actions: Handlingar
         application_id: Klientnyckel
-        callback_urls: Återkalls URLs
+        callback_urls: Callback URLs
         scopes: Omfattning
         secret: Kundhemlighet
-        title: 'Program: %{name}'
+        title: 'Application: %{name}'
     authorizations:
       buttons:
         authorize: Godkänna
@@ -110,7 +110,7 @@ sv:
       admin:
         nav:
           applications: Applikationer
-          oauth2_provider: OAuth2 leverantör
+          oauth2_provider: OAuth2 Provider
       application:
         title: OAuth-behörighet krävs
     scopes:

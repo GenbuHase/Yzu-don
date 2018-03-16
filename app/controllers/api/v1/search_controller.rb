@@ -33,8 +33,12 @@ class Api::V1::SearchController < Api::BaseController
     SearchService.new.call(
       params[:q],
       RESULTS_LIMIT,
-      truthy_param?(:resolve),
+      resolving_search?,
       current_account
     )
+  end
+
+  def resolving_search?
+    params[:resolve] == 'true'
   end
 end

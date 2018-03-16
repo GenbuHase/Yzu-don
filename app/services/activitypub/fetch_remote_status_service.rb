@@ -30,7 +30,7 @@ class ActivityPub::FetchRemoteStatusService < BaseService
   end
 
   def actor_id
-    value_or_id(first_of_value(@json['attributedTo']))
+    first_of_value(@json['attributedTo'])
   end
 
   def trustworthy_attribution?(uri, attributed_to)

@@ -19,14 +19,13 @@ export const TIMELINE_DISCONNECT = 'TIMELINE_DISCONNECT';
 
 export const TIMELINE_CONTEXT_UPDATE = 'CONTEXT_UPDATE';
 
-export function refreshTimelineSuccess(timeline, statuses, skipLoading, next, partial) {
+export function refreshTimelineSuccess(timeline, statuses, skipLoading, next) {
   return {
     type: TIMELINE_REFRESH_SUCCESS,
     timeline,
     statuses,
     skipLoading,
     next,
-    partial,
   };
 };
 
@@ -89,7 +88,7 @@ export function refreshTimeline(timelineId, path, params = {}) {
   return function (dispatch, getState) {
     const timeline = getState().getIn(['timelines', timelineId], ImmutableMap());
 
-    if (timeline.get('isLoading') || (timeline.get('online') && !timeline.get('isPartial'))) {
+    if (timeline.get('isLoading') || timeline.get('online')) {
       return;
     }
 
@@ -105,26 +104,21 @@ export function refreshTimeline(timelineId, path, params = {}) {
     dispatch(refreshTimelineRequest(timelineId, skipLoading));
 
     api(getState).get(path, { params }).then(response => {
-      if (response.status === 206) {
-        dispatch(refreshTimelineSuccess(timelineId, [], skipLoading, null, true));
-      } else {
-        const next = getLinks(response).refs.find(link => link.rel === 'next');
-        dispatch(refreshTimelineSuccess(timelineId, response.data, skipLoading, next ? next.uri : null, false));
-      }
+      const next = getLinks(response).refs.find(link => link.rel === 'next');
+      dispatch(refreshTimelineSuccess(timelineId, response.data, skipLoading, next ? next.uri : null));
     }).catch(error => {
       dispatch(refreshTimelineFail(timelineId, error, skipLoading));
     });
   };
 };
 
-export const refreshHomeTimeline            = () => refreshTimeline('home', '/api/v1/timelines/home');
-export const refreshPublicTimeline          = () => refreshTimeline('public', '/api/v1/timelines/public');
-export const refreshCommunityTimeline       = () => refreshTimeline('community', '/api/v1/timelines/public', { local: true });
-export const refreshAccountTimeline         = (accountId, withReplies) => refreshTimeline(`account:${accountId}${withReplies ? ':with_replies' : ''}`, `/api/v1/accounts/${accountId}/statuses`, { exclude_replies: !withReplies });
-export const refreshAccountFeaturedTimeline = accountId => refreshTimeline(`account:${accountId}:pinned`, `/api/v1/accounts/${accountId}/statuses`, { pinned: true });
-export const refreshAccountMediaTimeline    = accountId => refreshTimeline(`account:${accountId}:media`, `/api/v1/accounts/${accountId}/statuses`, { only_media: true });
-export const refreshHashtagTimeline         = hashtag => refreshTimeline(`hashtag:${hashtag}`, `/api/v1/timelines/tag/${hashtag}`);
-export const refreshListTimeline            = id => refreshTimeline(`list:${id}`, `/api/v1/timelines/list/${id}`);
+export const refreshHomeTimeline         = () => refreshTimeline('home', '/api/v1/timelines/home');
+export const refreshPublicTimeline       = () => refreshTimeline('public', '/api/v1/timelines/public');
+export const refreshCommunityTimeline    = () => refreshTimeline('community', '/api/v1/timelines/public', { local: true });
+export const refreshAccountTimeline      = accountId => refreshTimeline(`account:${accountId}`, `/api/v1/accounts/${accountId}/statuses`);
+export const refreshAccountMediaTimeline = accountId => refreshTimeline(`account:${accountId}:media`, `/api/v1/accounts/${accountId}/statuses`, { only_media: true });
+export const refreshHashtagTimeline      = hashtag => refreshTimeline(`hashtag:${hashtag}`, `/api/v1/timelines/tag/${hashtag}`);
+export const refreshListTimeline         = id => refreshTimeline(`list:${id}`, `/api/v1/timelines/list/${id}`);
 
 export function refreshTimelineFail(timeline, error, skipLoading) {
   return {
@@ -162,7 +156,7 @@ export function expandTimeline(timelineId, path, params = {}) {
 export const expandHomeTimeline         = () => expandTimeline('home', '/api/v1/timelines/home');
 export const expandPublicTimeline       = () => expandTimeline('public', '/api/v1/timelines/public');
 export const expandCommunityTimeline    = () => expandTimeline('community', '/api/v1/timelines/public', { local: true });
-export const expandAccountTimeline      = (accountId, withReplies) => expandTimeline(`account:${accountId}${withReplies ? ':with_replies' : ''}`, `/api/v1/accounts/${accountId}/statuses`, { exclude_replies: !withReplies });
+export const expandAccountTimeline      = accountId => expandTimeline(`account:${accountId}`, `/api/v1/accounts/${accountId}/statuses`);
 export const expandAccountMediaTimeline = accountId => expandTimeline(`account:${accountId}:media`, `/api/v1/accounts/${accountId}/statuses`, { only_media: true });
 export const expandHashtagTimeline      = hashtag => expandTimeline(`hashtag:${hashtag}`, `/api/v1/timelines/tag/${hashtag}`);
 export const expandListTimeline         = id => expandTimeline(`list:${id}`, `/api/v1/timelines/list/${id}`);

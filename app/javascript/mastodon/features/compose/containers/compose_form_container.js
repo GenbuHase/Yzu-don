@@ -1,8 +1,7 @@
 import { connect } from 'react-redux';
 import ComposeForm from '../components/compose_form';
-
+import { uploadCompose } from '../../../actions/compose';
 import {
-  uploadCompose,
   changeCompose,
   submitCompose,
   clearComposeSuggestions,
@@ -11,12 +10,6 @@ import {
   changeComposeSpoilerText,
   insertEmojiCompose,
 } from '../../../actions/compose';
-
-import {
-  submitRisa,
-  submitGoji,
-  submitHarukin
-} from '../../../actions/UtilBtns';
 
 const mapStateToProps = state => ({
   text: state.getIn(['compose', 'text']),
@@ -30,7 +23,6 @@ const mapStateToProps = state => ({
   is_submitting: state.getIn(['compose', 'is_submitting']),
   is_uploading: state.getIn(['compose', 'is_uploading']),
   showSearch: state.getIn(['search', 'submitted']) && !state.getIn(['search', 'hidden']),
-  anyMedia: state.getIn(['compose', 'media_attachments']).size > 0,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -65,18 +57,6 @@ const mapDispatchToProps = (dispatch) => ({
 
   onPickEmoji (position, data) {
     dispatch(insertEmojiCompose(position, data));
-  },
-  
-  onRisaSubmit (textarea) {
-    dispatch(submitRisa(textarea));
-  },
-
-  onGojiSubmit (textarea) {
-    dispatch(submitGoji(textarea));
-  },
-
-  onHarukinSubmit (textarea) {
-    dispatch(submitHarukin(textarea));
   },
 
 });

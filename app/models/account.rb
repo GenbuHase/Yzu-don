@@ -43,7 +43,6 @@
 #  protocol                :integer          default("ostatus"), not null
 #  memorial                :boolean          default(FALSE), not null
 #  moved_to_account_id     :integer
-#  featured_collection_url :string
 #
 
 class Account < ApplicationRecord
@@ -103,7 +102,7 @@ class Account < ApplicationRecord
   has_many :lists, through: :list_accounts
 
   # Account migrations
-  belongs_to :moved_to_account, class_name: 'Account', optional: true
+  belongs_to :moved_to_account, class_name: 'Account'
 
   scope :remote, -> { where.not(domain: nil) }
   scope :local, -> { where(domain: nil) }
@@ -164,7 +163,7 @@ class Account < ApplicationRecord
 
   def refresh!
     return if local?
-    ResolveAccountService.new.call(acct)
+    ResolveRemoteAccountService.new.call(acct)
   end
 
   def unsuspend!

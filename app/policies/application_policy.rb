@@ -15,8 +15,4 @@ class ApplicationPolicy
   def current_user
     current_account&.user
   end
-
-  def user_signed_in?
-    !current_user.nil?
-  end
 end

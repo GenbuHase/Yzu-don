@@ -34,8 +34,8 @@ class SiteUpload < ApplicationRecord
 
     return if tempfile.nil?
 
-    width, height = FastImage.size(tempfile.path)
-    self.meta = { width: width, height: height }
+    geometry  = Paperclip::Geometry.from_file(tempfile)
+    self.meta = { width: geometry.width.to_i, height: geometry.height.to_i }
   end
 
   def clear_cache

@@ -10,7 +10,6 @@ export const REPORT_SUBMIT_FAIL    = 'REPORT_SUBMIT_FAIL';
 
 export const REPORT_STATUS_TOGGLE  = 'REPORT_STATUS_TOGGLE';
 export const REPORT_COMMENT_CHANGE = 'REPORT_COMMENT_CHANGE';
-export const REPORT_FORWARD_CHANGE = 'REPORT_FORWARD_CHANGE';
 
 export function initReport(account, status) {
   return dispatch => {
@@ -46,7 +45,6 @@ export function submitReport() {
       account_id: getState().getIn(['reports', 'new', 'account_id']),
       status_ids: getState().getIn(['reports', 'new', 'status_ids']),
       comment: getState().getIn(['reports', 'new', 'comment']),
-      forward: getState().getIn(['reports', 'new', 'forward']),
     }).then(response => {
       dispatch(closeModal());
       dispatch(submitReportSuccess(response.data));
@@ -78,12 +76,5 @@ export function changeReportComment(comment) {
   return {
     type: REPORT_COMMENT_CHANGE,
     comment,
-  };
-};
-
-export function changeReportForward(forward) {
-  return {
-    type: REPORT_FORWARD_CHANGE,
-    forward,
   };
 };

@@ -80,7 +80,7 @@ export default class Following extends ImmutablePureComponent {
         <ScrollContainer scrollKey='following'>
           <div className='scrollable' onScroll={this.handleScroll}>
             <div className='following'>
-              <HeaderContainer accountId={this.props.params.accountId} hideTabs />
+              <HeaderContainer accountId={this.props.params.accountId} />
               {accountIds.map(id => <AccountContainer key={id} id={id} withNote={false} />)}
               {loadMore}
             </div>

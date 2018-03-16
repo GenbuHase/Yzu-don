@@ -24,12 +24,7 @@ export default class StatusContent extends React.PureComponent {
   };
 
   _updateStatusLinks () {
-    const node = this.node;
-
-    if (!node) {
-      return;
-    }
-
+    const node  = this.node;
     const links = node.querySelectorAll('a');
 
     for (var i = 0; i < links.length; ++i) {
@@ -120,10 +115,6 @@ export default class StatusContent extends React.PureComponent {
   render () {
     const { status } = this.props;
 
-    if (status.get('content').length === 0) {
-      return null;
-    }
-
     const hidden = this.props.onExpandedToggle ? !this.props.expanded : this.state.hidden;
 
     const content = { __html: status.get('contentHtml') };
@@ -137,10 +128,6 @@ export default class StatusContent extends React.PureComponent {
     if (isRtl(status.get('search_index'))) {
       directionStyle.direction = 'rtl';
     }
-    
-    [ content, spoilerContent ].forEach(text => {
-      text.__html = text.__html.replace(/- ([^-]*) -/g, "<s>$1</s>").replace(/- (<a.*<\/a>) -/, "<s>$1</s>");
-    });
 
     if (status.get('spoiler_text').length > 0) {
       let mentionsPlaceholder = '';

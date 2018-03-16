@@ -27,7 +27,7 @@ class Api::V1::MediaController < Api::BaseController
   private
 
   def media_params
-    params.permit(:file, :description, :focus)
+    params.permit(:file, :description)
   end
 
   def file_type_error

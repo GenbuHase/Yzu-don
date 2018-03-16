@@ -120,17 +120,13 @@ export default class ListTimeline extends React.PureComponent {
     if (typeof list === 'undefined') {
       return (
         <Column>
-          <div className='scrollable'>
-            <LoadingIndicator />
-          </div>
+          <LoadingIndicator />
         </Column>
       );
     } else if (list === false) {
       return (
         <Column>
-          <div className='scrollable'>
-            <MissingIndicator />
-          </div>
+          <MissingIndicator />
         </Column>
       );
     }

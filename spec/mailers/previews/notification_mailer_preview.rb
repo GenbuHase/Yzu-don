@@ -1,5 +1,4 @@
 # Preview all emails at http://localhost:3000/rails/mailers/notification_mailer
-
 class NotificationMailerPreview < ActionMailer::Preview
   # Preview this email at http://localhost:3000/rails/mailers/notification_mailer/mention
   def mention
@@ -11,12 +10,6 @@ class NotificationMailerPreview < ActionMailer::Preview
   def follow
     f = Follow.last
     NotificationMailer.follow(f.target_account, Notification.find_by(activity: f))
-  end
-
-  # Preview this email at http://localhost:3000/rails/mailers/notification_mailer/follow_request
-  def follow_request
-    f = Follow.last
-    NotificationMailer.follow_request(f.target_account, Notification.find_by(activity: f))
   end
 
   # Preview this email at http://localhost:3000/rails/mailers/notification_mailer/favourite

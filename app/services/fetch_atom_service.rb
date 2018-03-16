@@ -46,13 +46,11 @@ class FetchAtomService < BaseService
       json = body_to_json(@response.to_s)
       if supported_context?(json) && json['type'] == 'Person' && json['inbox'].present?
         [json['id'], { prefetched_body: @response.to_s, id: true }, :activitypub]
-      elsif supported_context?(json) && json['type'] == 'Note'
-        [json['id'], { prefetched_body: @response.to_s, id: true }, :activitypub]
       else
         @unsupported_activity = true
         nil
       end
-    elsif @response['Link'] && !terminal && link_header.find_link(%w(rel alternate))
+    elsif @response['Link'] && !terminal
       process_headers
     elsif @response.mime_type == 'text/html' && !terminal
       process_html
@@ -72,6 +70,8 @@ class FetchAtomService < BaseService
   end
 
   def process_headers
+    link_header = LinkHeader.parse(@response['Link'].is_a?(Array) ? @response['Link'].first : @response['Link'])
+
     json_link = link_header.find_link(%w(rel alternate), %w(type application/activity+json)) || link_header.find_link(%w(rel alternate), ['type', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'])
     atom_link = link_header.find_link(%w(rel alternate), %w(type application/atom+xml))
 
@@ -79,9 +79,5 @@ class FetchAtomService < BaseService
     result ||= process(atom_link.href, terminal: true) unless atom_link.nil?
 
     result
-  end
-
-  def link_header
-    @link_header ||= LinkHeader.parse(@response['Link'].is_a?(Array) ? @response['Link'].first : @response['Link'])
   end
 end
