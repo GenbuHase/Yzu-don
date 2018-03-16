@@ -105,6 +105,16 @@
       margin-bottom: 30px;
     }
 
+    h4 {
+      text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 500;
+      color: $ui-primary-color;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid lighten($ui-base-color, 8%);
+    }
+
     h6 {
       font-size: 16px;
       color: $ui-secondary-color;
@@ -398,10 +408,12 @@
     }
   }
 
+  &__content {
+    max-width: calc(100% - 90px);
+  }
+
   &__title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-wrap: break-word;
   }
 
   &__timestamp {
@@ -415,7 +427,7 @@
     color: $ui-primary-color;
     font-family: 'mastodon-font-monospace', monospace;
     font-size: 12px;
-    white-space: nowrap;
+    word-wrap: break-word;
     min-height: 20px;
   }
 
