@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_session
   helper_method :current_theme
   helper_method :single_user_mode?
-  helper_method :use_seamless_external_login?
 
   rescue_from ActionController::RoutingError, with: :not_found
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
@@ -31,11 +30,11 @@ class ApplicationController < ActionController::Base
   private
 
   def https_enabled?
-    Rails.env.production?
+    Rails.env.production? && ENV['LOCAL_HTTPS'] == 'true'
   end
 
   def store_current_location
-    store_location_for(:user, request.url) unless request.format == :json
+    store_location_for(:user, request.url)
   end
 
   def require_admin!
@@ -74,10 +73,6 @@ class ApplicationController < ActionController::Base
 
   def single_user_mode?
     @single_user_mode ||= Rails.configuration.x.single_user_mode && Account.exists?
-  end
-
-  def use_seamless_external_login?
-    Devise.pam_authentication || Devise.ldap_authentication
   end
 
   def current_account
@@ -128,24 +123,11 @@ class ApplicationController < ActionController::Base
   end
 
   def render_cached_json(cache_key, **options)
-    options[:expires_in] ||= 3.minutes
-    cache_key              = cache_key.join(':') if cache_key.is_a?(Enumerable)
-    cache_public           = options.key?(:public) ? options.delete(:public) : true
-    content_type           = options.delete(:content_type) || 'application/json'
-
     data = Rails.cache.fetch(cache_key, { raw: true }.merge(options)) do
       yield.to_json
     end
 
-    expires_in options[:expires_in], public: cache_public
-    render json: data, content_type: content_type
-  end
-
-  def set_cache_headers
-    response.headers['Vary'] = 'Accept'
-  end
-
-  def skip_session!
-    request.session_options[:skip] = true
+    expires_in options[:expires_in], public: true
+    render json: data
   end
 end

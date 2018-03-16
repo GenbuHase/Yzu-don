@@ -6,8 +6,6 @@ import ActionBar from '../../account/components/action_bar';
 import MissingIndicator from '../../../components/missing_indicator';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import MovedNote from './moved_note';
-import { FormattedMessage } from 'react-intl';
-import { NavLink } from 'react-router-dom';
 
 export default class Header extends ImmutablePureComponent {
 
@@ -21,7 +19,6 @@ export default class Header extends ImmutablePureComponent {
     onMute: PropTypes.func.isRequired,
     onBlockDomain: PropTypes.func.isRequired,
     onUnblockDomain: PropTypes.func.isRequired,
-    hideTabs: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -69,7 +66,7 @@ export default class Header extends ImmutablePureComponent {
   }
 
   render () {
-    const { account, hideTabs } = this.props;
+    const { account } = this.props;
 
     if (account === null) {
       return <MissingIndicator />;
@@ -82,7 +79,6 @@ export default class Header extends ImmutablePureComponent {
         <InnerHeader
           account={account}
           onFollow={this.handleFollow}
-          onBlock={this.handleBlock}
         />
 
         <ActionBar
@@ -95,14 +91,6 @@ export default class Header extends ImmutablePureComponent {
           onBlockDomain={this.handleBlockDomain}
           onUnblockDomain={this.handleUnblockDomain}
         />
-
-        {!hideTabs && (
-          <div className='account__section-headline'>
-            <NavLink exact to={`/accounts/${account.get('id')}`}><FormattedMessage id='account.posts' defaultMessage='Toots' /></NavLink>
-            <NavLink exact to={`/accounts/${account.get('id')}/with_replies`}><FormattedMessage id='account.posts_with_replies' defaultMessage='Toots with replies' /></NavLink>
-            <NavLink exact to={`/accounts/${account.get('id')}/media`}><FormattedMessage id='account.media' defaultMessage='Media' /></NavLink>
-          </div>
-        )}
       </div>
     );
   }

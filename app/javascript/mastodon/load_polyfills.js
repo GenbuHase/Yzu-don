@@ -14,7 +14,6 @@ function loadPolyfills() {
   const needsBasePolyfills = !(
     window.Intl &&
     Object.assign &&
-    Object.values &&
     Number.isNaN &&
     window.Symbol &&
     Array.prototype.includes

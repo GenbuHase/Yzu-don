@@ -1,7 +1,6 @@
 import api from '../api';
 import { throttle } from 'lodash';
 import { search as emojiSearch } from '../features/emoji/emoji_mart_search_light';
-import { tagHistory } from '../settings';
 import { useEmoji } from './emojis';
 
 import {
@@ -28,9 +27,6 @@ export const COMPOSE_UPLOAD_UNDO     = 'COMPOSE_UPLOAD_UNDO';
 export const COMPOSE_SUGGESTIONS_CLEAR = 'COMPOSE_SUGGESTIONS_CLEAR';
 export const COMPOSE_SUGGESTIONS_READY = 'COMPOSE_SUGGESTIONS_READY';
 export const COMPOSE_SUGGESTION_SELECT = 'COMPOSE_SUGGESTION_SELECT';
-export const COMPOSE_SUGGESTION_TAGS_UPDATE = 'COMPOSE_SUGGESTION_TAGS_UPDATE';
-
-export const COMPOSE_TAG_HISTORY_UPDATE = 'COMPOSE_TAG_HISTORY_UPDATE';
 
 export const COMPOSE_MOUNT   = 'COMPOSE_MOUNT';
 export const COMPOSE_UNMOUNT = 'COMPOSE_UNMOUNT';
@@ -96,9 +92,8 @@ export function mentionCompose(account, router) {
 export function submitCompose() {
   return function (dispatch, getState) {
     const status = getState().getIn(['compose', 'text'], '');
-    const media  = getState().getIn(['compose', 'media_attachments']);
 
-    if ((!status || !status.length) && media.size === 0) {
+    if (!status || !status.length) {
       return;
     }
 
@@ -107,7 +102,7 @@ export function submitCompose() {
     api(getState).post('/api/v1/statuses', {
       status,
       in_reply_to_id: getState().getIn(['compose', 'in_reply_to'], null),
-      media_ids: media.map(item => item.get('id')),
+      media_ids: getState().getIn(['compose', 'media_attachments']).map(item => item.get('id')),
       sensitive: getState().getIn(['compose', 'sensitive']),
       spoiler_text: getState().getIn(['compose', 'spoiler_text'], ''),
       visibility: getState().getIn(['compose', 'privacy']),
@@ -116,7 +111,6 @@ export function submitCompose() {
         'Idempotency-Key': getState().getIn(['compose', 'idempotencyKey']),
       },
     }).then(function (response) {
-      dispatch(insertIntoTagHistory(response.data.tags));
       dispatch(submitComposeSuccess({ ...response.data }));
 
       // To make the app more responsive, immediately get the status into the columns
@@ -184,11 +178,11 @@ export function uploadCompose(files) {
   };
 };
 
-export function changeUploadCompose(id, params) {
+export function changeUploadCompose(id, description) {
   return (dispatch, getState) => {
     dispatch(changeUploadComposeRequest());
 
-    api(getState).put(`/api/v1/media/${id}`, params).then(response => {
+    api(getState).put(`/api/v1/media/${id}`, { description }).then(response => {
       dispatch(changeUploadComposeSuccess(response.data));
     }).catch(error => {
       dispatch(changeUploadComposeFail(id, error));
@@ -279,22 +273,12 @@ const fetchComposeSuggestionsEmojis = (dispatch, getState, token) => {
   dispatch(readyComposeSuggestionsEmojis(token, results));
 };
 
-const fetchComposeSuggestionsTags = (dispatch, getState, token) => {
-  dispatch(updateSuggestionTags(token));
-};
-
 export function fetchComposeSuggestions(token) {
   return (dispatch, getState) => {
-    switch (token[0]) {
-    case ':':
+    if (token[0] === ':') {
       fetchComposeSuggestionsEmojis(dispatch, getState, token);
-      break;
-    case '#':
-      fetchComposeSuggestionsTags(dispatch, getState, token);
-      break;
-    default:
+    } else {
       fetchComposeSuggestionsAccounts(dispatch, getState, token);
-      break;
     }
   };
 };
@@ -324,9 +308,6 @@ export function selectComposeSuggestion(position, token, suggestion) {
       startPosition = position - 1;
 
       dispatch(useEmoji(suggestion));
-    } else if (suggestion[0] === '#') {
-      completion    = suggestion;
-      startPosition = position - 1;
     } else {
       completion    = getState().getIn(['accounts', suggestion, 'acct']);
       startPosition = position;
@@ -340,48 +321,6 @@ export function selectComposeSuggestion(position, token, suggestion) {
     });
   };
 };
-
-export function updateSuggestionTags(token) {
-  return {
-    type: COMPOSE_SUGGESTION_TAGS_UPDATE,
-    token,
-  };
-}
-
-export function updateTagHistory(tags) {
-  return {
-    type: COMPOSE_TAG_HISTORY_UPDATE,
-    tags,
-  };
-}
-
-export function hydrateCompose() {
-  return (dispatch, getState) => {
-    const me = getState().getIn(['meta', 'me']);
-    const history = tagHistory.get(me);
-
-    if (history !== null) {
-      dispatch(updateTagHistory(history));
-    }
-  };
-}
-
-function insertIntoTagHistory(tags) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const oldHistory = state.getIn(['compose', 'tagHistory']);
-    const me = state.getIn(['meta', 'me']);
-    const names = tags.map(({ name }) => name);
-    const intersectedOldHistory = oldHistory.filter(name => !names.includes(name));
-
-    names.push(...intersectedOldHistory.toJS());
-
-    const newHistory = names.slice(0, 1000);
-
-    tagHistory.set(me, newHistory);
-    dispatch(updateTagHistory(newHistory));
-  };
-}
 
 export function mountCompose() {
   return {

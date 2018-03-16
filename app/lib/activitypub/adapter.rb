@@ -17,8 +17,6 @@ class ActivityPub::Adapter < ActiveModelSerializers::Adapter::Base
         'conversation'              => 'ostatus:conversation',
         'toot'                      => 'http://joinmastodon.org/ns#',
         'Emoji'                     => 'toot:Emoji',
-        'focalPoint'                => { '@container' => '@list', '@id' => 'toot:focalPoint' },
-        'featured'                  => 'toot:featured',
       },
     ],
   }.freeze

@@ -15,7 +15,7 @@ class ActivityTracker
       key = [prefix, current_week].join(':')
 
       redis.pfadd(key, value)
-      redis.expire(key, EXPIRE_AFTER)
+      redis.expire(key, value)
     end
 
     private

@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class AdminMailer < ApplicationMailer
-  layout 'plain_mailer'
-
-  helper :stream_entries
+  helper StreamEntriesHelper
 
   def new_report(recipient, report)
     @report   = report

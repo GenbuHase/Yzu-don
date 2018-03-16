@@ -62,7 +62,7 @@ export default class Favourites extends ImmutablePureComponent {
     this.column = c;
   }
 
-  handleLoadMore = debounce(() => {
+  handleScrollToBottom = debounce(() => {
     this.props.dispatch(expandFavouritedStatuses());
   }, 300, { leading: true })
 
@@ -89,7 +89,7 @@ export default class Favourites extends ImmutablePureComponent {
           scrollKey={`favourited_statuses-${columnId}`}
           hasMore={hasMore}
           isLoading={isLoading}
-          onLoadMore={this.handleLoadMore}
+          onScrollToBottom={this.handleScrollToBottom}
         />
       </Column>
     );

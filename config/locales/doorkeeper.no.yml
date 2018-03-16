@@ -5,7 +5,6 @@
       doorkeeper/application:
         name: Navn
         redirect_uri: Omdirigerings-URI
-        scopes: Omfang
         website: Applikasjonsnettside
     errors:
       models:
@@ -40,7 +39,6 @@
         delete: Fjern
         name: Navn
         new: Ny applikasjon
-        scopes: Omfang
         show: Vis
         title: Dine applikasjoner
       new:

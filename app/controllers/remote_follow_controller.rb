@@ -38,8 +38,4 @@ class RemoteFollowController < ApplicationController
   def suspended_account?
     @account.suspended?
   end
-
-  def set_body_classes
-    @body_classes = 'modal-layout'
-  end
 end

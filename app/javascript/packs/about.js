@@ -1,5 +1,7 @@
 import loadPolyfills from '../mastodon/load_polyfills';
 
+require.context('../images/', true);
+
 function loaded() {
   const TimelineContainer = require('../mastodon/containers/timeline_container').default;
   const React             = require('react');

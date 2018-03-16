@@ -5,7 +5,7 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
     original_status   = status_from_uri(object_uri)
     original_status ||= fetch_remote_original_status
 
-    return if original_status.nil? || delete_arrived_first?(@json['id']) || !announceable?(original_status)
+    return if original_status.nil? || delete_arrived_first?(@json['id'])
 
     status = Status.find_by(account: @account, reblog: original_status)
 
@@ -15,8 +15,7 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
       account: @account,
       reblog: original_status,
       uri: @json['id'],
-      created_at: @options[:override_timestamps] ? nil : @json['published'],
-      visibility: original_status.visibility
+      created_at: @options[:override_timestamps] ? nil : @json['published']
     )
 
     distribute(status)
@@ -33,9 +32,5 @@ class ActivityPub::Activity::Announce < ActivityPub::Activity
     elsif @object['url'].present?
       ::FetchRemoteStatusService.new.call(@object['url'])
     end
-  end
-
-  def announceable?(status)
-    status.account_id == @account.id || status.public_visibility? || status.unlisted_visibility?
   end
 end

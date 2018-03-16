@@ -4,16 +4,14 @@ exports[`<DisplayName /> renders display name + account name 1`] = `
 <span
   className="display-name"
 >
-  <bdi>
-    <strong
-      className="display-name__html"
-      dangerouslySetInnerHTML={
-        Object {
-          "__html": "<p>Foo</p>",
-        }
+  <strong
+    className="display-name__html"
+    dangerouslySetInnerHTML={
+      Object {
+        "__html": "<p>Foo</p>",
       }
-    />
-  </bdi>
+    }
+  />
    
   <span
     className="display-name__account"

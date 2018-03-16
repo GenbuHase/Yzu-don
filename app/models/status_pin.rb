@@ -11,8 +11,8 @@
 #
 
 class StatusPin < ApplicationRecord
-  belongs_to :account
-  belongs_to :status
+  belongs_to :account, required: true
+  belongs_to :status, required: true
 
   validates_with StatusPinValidator
 end

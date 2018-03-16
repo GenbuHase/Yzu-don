@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const emptyComponent = () => null;
 const noop = () => { };
 
-class Bundle extends React.PureComponent {
+class Bundle extends React.Component {
 
   static propTypes = {
     fetchComponent: PropTypes.func.isRequired,
@@ -26,7 +26,7 @@ class Bundle extends React.PureComponent {
     onFetchFail: noop,
   }
 
-  static cache = new Map
+  static cache = {}
 
   state = {
     mod: undefined,
@@ -51,12 +51,13 @@ class Bundle extends React.PureComponent {
 
   load = (props) => {
     const { fetchComponent, onFetch, onFetchSuccess, onFetchFail, renderDelay } = props || this.props;
-    const cachedMod = Bundle.cache.get(fetchComponent);
 
     onFetch();
 
-    if (cachedMod) {
-      this.setState({ mod: cachedMod.default });
+    if (Bundle.cache[fetchComponent.name]) {
+      const mod = Bundle.cache[fetchComponent.name];
+
+      this.setState({ mod: mod.default });
       onFetchSuccess();
       return Promise.resolve();
     }
@@ -70,7 +71,7 @@ class Bundle extends React.PureComponent {
 
     return fetchComponent()
       .then((mod) => {
-        Bundle.cache.set(fetchComponent, mod);
+        Bundle.cache[fetchComponent.name] = mod;
         this.setState({ mod: mod.default });
         onFetchSuccess();
       })

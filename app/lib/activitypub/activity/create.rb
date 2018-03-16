@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class ActivityPub::Activity::Create < ActivityPub::Activity
-  SUPPORTED_TYPES = %w(Note).freeze
-  CONVERTED_TYPES = %w(Image Video Article).freeze
+  SUPPORTED_TYPES = %w(Article Note).freeze
+  CONVERTED_TYPES = %w(Image Video).freeze
 
   def perform
-    return if delete_arrived_first?(object_uri) || unsupported_object_type? || invalid_origin?(@object['id'])
+    return if delete_arrived_first?(object_uri) || unsupported_object_type?
 
     RedisLock.acquire(lock_options) do |lock|
       if lock.acquired?
@@ -20,12 +20,13 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   private
 
   def process_status
-    status_params = process_status_params
+    media_attachments = process_attachments
 
     ApplicationRecord.transaction do
       @status = Status.create!(status_params)
 
       process_tags(@status)
+      attach_media(@status, media_attachments)
     end
 
     resolve_thread(@status)
@@ -39,7 +40,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     status
   end
 
-  def process_status_params
+  def status_params
     {
       uri: @object['id'],
       url: object_url || @object['id'],
@@ -53,7 +54,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       visibility: visibility_from_audience,
       thread: replied_to_status,
       conversation: conversation_from_uri(@object['conversation']),
-      media_attachments: process_attachments.take(4),
     }
   end
 
@@ -108,7 +108,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def process_attachments
-    return [] if @object['attachment'].nil?
+    return if @object['attachment'].nil?
 
     media_attachments = []
 
@@ -116,7 +116,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       next if unsupported_media_type?(attachment['mediaType']) || attachment['url'].blank?
 
       href             = Addressable::URI.parse(attachment['url']).normalize.to_s
-      media_attachment = MediaAttachment.create(account: @account, remote_url: href, description: attachment['name'].presence, focus: attachment['focalPoint'])
+      media_attachment = MediaAttachment.create(account: @account, remote_url: href, description: attachment['name'].presence)
       media_attachments << media_attachment
 
       next if skip_download?
@@ -130,6 +130,13 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     Rails.logger.debug e
 
     media_attachments
+  end
+
+  def attach_media(status, media_attachments)
+    return if media_attachments.blank?
+
+    media = MediaAttachment.where(status_id: nil, id: media_attachments.take(4).map(&:id))
+    media.update(status_id: status.id)
   end
 
   def resolve_thread(status)
@@ -206,14 +213,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def object_url
     return if @object['url'].blank?
-
-    url_candidate = url_to_href(@object['url'], 'text/html')
-
-    if invalid_origin?(url_candidate)
-      nil
-    else
-      url_candidate
-    end
+    url_to_href(@object['url'], 'text/html')
   end
 
   def content_language_map?
@@ -243,15 +243,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def skip_download?
     return @skip_download if defined?(@skip_download)
     @skip_download ||= DomainBlock.find_by(domain: @account.domain)&.reject_media?
-  end
-
-  def invalid_origin?(url)
-    return true if unsupported_uri_scheme?(url)
-
-    needle   = Addressable::URI.parse(url).host
-    haystack = Addressable::URI.parse(@account.uri).host
-
-    !haystack.casecmp(needle).zero?
   end
 
   def reply_to_local?

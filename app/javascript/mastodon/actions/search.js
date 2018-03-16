@@ -1,5 +1,4 @@
 import api from '../api';
-import { fetchRelationships } from './accounts';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
 export const SEARCH_CLEAR  = 'SEARCH_CLEAR';
@@ -39,7 +38,6 @@ export function submitSearch() {
       },
     }).then(response => {
       dispatch(fetchSearchSuccess(response.data));
-      dispatch(fetchRelationships(response.data.accounts.map(item => item.id)));
     }).catch(error => {
       dispatch(fetchSearchFail(error));
     });

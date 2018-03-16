@@ -13,10 +13,9 @@
 
 class FollowRequest < ApplicationRecord
   include Paginable
-  include RelationshipCacheable
 
-  belongs_to :account
-  belongs_to :target_account, class_name: 'Account'
+  belongs_to :account, required: true
+  belongs_to :target_account, class_name: 'Account', required: true
 
   has_one :notification, as: :activity, dependent: :destroy
 

@@ -6,7 +6,7 @@ fr:
         name: Nom
         redirect_uri: L’URL de redirection
         scope: Portée
-        scopes: Étendues
+        scopes: Étendue
         website: Site web de l'application
     errors:
       models:
@@ -41,7 +41,7 @@ fr:
         delete: Effacer
         name: Nom
         new: Nouvelle application
-        scopes: Portées
+        scopes: Scopes
         show: Voir
         title: Vos applications
       new:
